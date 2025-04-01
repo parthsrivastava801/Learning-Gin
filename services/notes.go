@@ -13,7 +13,7 @@ type NotesService struct {
 
 func (n *NotesService) InitService(database *gorm.DB) {
 	n.db = database
-	n.db.AutoMigrate(&internal.Notes{})
+	//n.db.AutoMigrate(&internal.Notes{}) discovering an alternative way
 }
 
 type Note struct {
@@ -29,17 +29,14 @@ func (n *NotesService) GetNotesService() []Note {
 	return data
 }
 
-func (n *NotesService) CreateNotesService() Note {
-	data := Note{
-		Id: 3, Name: "Note 3",
+func (n *NotesService) CreateNotesService(title string, status bool) (*internal.Notes, error) {
+	note := &internal.Notes{
+		Title:  title,
+		Status: status,
 	}
-	err := n.db.Create(&internal.Notes{
-		Id:     1,
-		Title:  "Notes",
-		Status: false,
-	})
-	if err != nil {
+	if err := n.db.Create(note).Error; err != nil {
 		fmt.Print(err)
+		return nil, err
 	}
-	return data
+	return note, nil
 }

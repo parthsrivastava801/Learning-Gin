@@ -27,9 +27,33 @@ func (n *NotesController) GetNotes() gin.HandlerFunc {
 }
 
 func (n *NotesController) CreateNotes() gin.HandlerFunc {
+	type NoteBody struct {
+		Title  string `json:"title"`
+		Status bool   `json:"status"`
+	}
+
 	return func(c *gin.Context) {
+		var noteBody NoteBody
+		if err := c.ShouldBindJSON(&noteBody); err != nil {
+			c.JSON(400, gin.H{
+				"message": err.Error(),
+			})
+			return
+		}
+		note, err := n.notesService.CreateNotesService(noteBody.Title, noteBody.Status)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"message": err.Error(),
+			})
+			return
+		}
 		c.JSON(200, gin.H{
-			"notes": n.notesService.CreateNotesService(),
+			"note": note,
 		})
 	}
+
 }
+
+//c.JSON(200, gin.H{
+//	"notes": n.notesService.CreateNotesService(),
+//})
