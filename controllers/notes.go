@@ -28,7 +28,7 @@ func (n *NotesController) GetNotes() gin.HandlerFunc {
 
 func (n *NotesController) CreateNotes() gin.HandlerFunc {
 	type NoteBody struct {
-		Title  string `json:"title"`
+		Title  string `json:"title" binding:"required"`
 		Status bool   `json:"status"`
 	}
 

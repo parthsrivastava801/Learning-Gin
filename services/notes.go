@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"fmt"
 	internal "go-tutorial/internal/models"
 
@@ -34,6 +35,11 @@ func (n *NotesService) CreateNotesService(title string, status bool) (*internal.
 		Title:  title,
 		Status: status,
 	}
+
+	if note.Title == "" {
+		return nil, errors.New("title is required")
+	}
+
 	if err := n.db.Create(note).Error; err != nil {
 		fmt.Print(err)
 		return nil, err
